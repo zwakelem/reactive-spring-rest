@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import za.co.simplitate.reactivespring.users.service.UserService;
 
 import java.net.URI;
 import java.util.UUID;
@@ -14,52 +15,34 @@ import java.util.UUID;
 @RequestMapping("/users")
 public class UserController {
 
-    /*@PostMapping
-    public Mono<UserRest> createUser1(@RequestBody @Valid Mono<CreateUserRequest> user) {
-//        UserRest userRest = new UserRest();
-//        return Mono.just(userRest);
+    private final UserService userService;
 
-        return user.map(request -> new UserRest(UUID.randomUUID(),
-                request.getFirstName(),
-                request.getLastName(),
-                request.getEmail()));
-    }*/
-
-    /*@PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Mono<UserRest> createUser2(@RequestBody @Valid Mono<CreateUserRequest> user) {
-        return user.map(request -> new UserRest(UUID.randomUUID(),
-                request.getFirstName(),
-                request.getLastName(),
-                request.getEmail()));
-    }*/
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<ResponseEntity<UserRest>> createUser2(@RequestBody @Valid Mono<CreateUserRequest> user) {
-        return user.map(request -> new UserRest(UUID.randomUUID(),
-                request.getFirstName(),
-                request.getLastName(),
-                request.getEmail()))
-            .map(userRest -> ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .location(URI.create("/users/" + userRest.getId()))
-                    .body(userRest));
+    public Mono<ResponseEntity<UserRest>> createUser(@RequestBody @Valid Mono<CreateUserRequest> user) {
+
+        return userService.createUser(user)
+                .map(userRest -> ResponseEntity.status(HttpStatus.CREATED)
+                .location(URI.create("/users/" + userRest.getId()))
+                .body(userRest));
     }
 
     @GetMapping("/{userId}")
-    public Mono<UserRest> getUserById(@PathVariable("userId") UUID userId) {
-        return Mono.just(new UserRest(
-                userId, "Simphy", "Mgabhi", "simphy@gmail.com"));
+    public Mono<ResponseEntity<UserRest>> getUserById(@PathVariable("userId") UUID userId) {
+        return userService.getUserById(userId)
+                .map(userRest -> ResponseEntity.status(HttpStatus.OK)
+                .body(userRest))
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build()));
     }
 
     @GetMapping
     public Flux<UserRest> getAllUsers(@RequestParam(value = "offset", defaultValue = "0") int offset,
                                       @RequestParam(value = "limit", defaultValue = "50") int limit) {
-        return Flux.just(
-                new UserRest(UUID.randomUUID(), "Simphy", "Mgabhi", "simphy@gmail.com"),
-                new UserRest(UUID.randomUUID(), "Sibo", "Mgabhi", "sibo@gmail.com")
-        );
+        return userService.findAll(offset, limit);
     }
 }

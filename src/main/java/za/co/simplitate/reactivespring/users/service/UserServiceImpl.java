@@ -1,9 +1,13 @@
 package za.co.simplitate.reactivespring.users.service;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import za.co.simplitate.reactivespring.users.controller.CreateUserRequest;
@@ -24,11 +28,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<UserRest> createUser(Mono<CreateUserRequest> createUserRequest) {
-
         return createUserRequest
-                .mapNotNull(this::convertToUserEntity)
-                .flatMap(userRepository::save)
-                .mapNotNull(this::convertToUserRest);
+            .mapNotNull(this::convertToUserEntity)
+            .flatMap(userRepository::save)
+            .mapNotNull(this::convertToUserRest)
+            .onErrorMap(throwable -> {
+                if(throwable instanceof DuplicateKeyException) {
+                    return new ResponseStatusException(HttpStatus.CONFLICT, throwable.getMessage());
+                } else if(throwable instanceof DataIntegrityViolationException) {
+                    return new ResponseStatusException(HttpStatus.BAD_REQUEST, throwable.getMessage());
+                } else {
+                    return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, throwable.getMessage());
+                }
+            });
     }
 
     @Override

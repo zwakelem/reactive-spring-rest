@@ -10,8 +10,8 @@ public class CreateUserRequest {
     @Size(min = 2, max = 50, message = "First name cannot be shorter than 2 and longer than 50 characters")
     private String firstName;
 
-    @NotBlank(message="First name cannot be empty")
-    @Size(min = 2, max = 50, message = "First name cannot be shorter than 2 and longer than 50 characters")
+    @NotBlank(message="Last name cannot be empty")
+    @Size(min = 2, max = 50, message = "Last name cannot be shorter than 2 and longer than 50 characters")
     private String lastName;
 
     @NotBlank(message="email cannot be empty")

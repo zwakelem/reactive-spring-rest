@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import za.co.simplitate.reactivespring.users.model.CreateUserRequest;
+import za.co.simplitate.reactivespring.users.model.UserRest;
 import za.co.simplitate.reactivespring.users.service.UserService;
 
 import java.net.URI;

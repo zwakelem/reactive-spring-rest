@@ -1,10 +1,9 @@
 package za.co.simplitate.reactivespring.users.service;
 
-import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import za.co.simplitate.reactivespring.users.controller.CreateUserRequest;
-import za.co.simplitate.reactivespring.users.controller.UserRest;
+import za.co.simplitate.reactivespring.users.model.CreateUserRequest;
+import za.co.simplitate.reactivespring.users.model.UserRest;
 
 import java.util.UUID;
 

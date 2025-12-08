@@ -1,4 +1,4 @@
-package za.co.simplitate.reactivespring.users.controller;
+package za.co.simplitate.reactivespring.users.model;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

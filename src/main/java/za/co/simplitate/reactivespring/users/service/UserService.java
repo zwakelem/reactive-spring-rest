@@ -13,6 +13,5 @@ public interface UserService extends ReactiveUserDetailsService {
     Mono<UserRest> createUser(Mono<CreateUserRequest>  createUserRequest);
     Mono<UserRest> getUserById(UUID id);
     Flux<UserRest> findAll(int page, int limit);
-
-
+    Flux<UserRest> streamUser();
 }

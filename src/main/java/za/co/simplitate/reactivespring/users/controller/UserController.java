@@ -2,6 +2,7 @@ package za.co.simplitate.reactivespring.users.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +14,7 @@ import za.co.simplitate.reactivespring.users.model.UserRest;
 import za.co.simplitate.reactivespring.users.service.UserService;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.UUID;
 
 @RestController
@@ -49,5 +51,10 @@ public class UserController {
     public Flux<UserRest> getAllUsers(@RequestParam(value = "offset", defaultValue = "0") int offset,
                                       @RequestParam(value = "limit", defaultValue = "50") int limit) {
         return userService.findAll(offset, limit);
+    }
+
+    @GetMapping(value="/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<UserRest> streamUsers() {
+        return userService.streamUser();
     }
 }

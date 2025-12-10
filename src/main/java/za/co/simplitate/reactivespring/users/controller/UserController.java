@@ -28,8 +28,8 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<ResponseEntity<UserRest>> createUser(@RequestBody @Valid Mono<CreateUserRequest> user) {
-        return userService.createUser(user)
+    public Mono<ResponseEntity<UserRest>> createUser(@RequestBody @Valid CreateUserRequest user) {
+        return userService.createUser(Mono.just(user))
                 .map(userRest -> ResponseEntity.status(HttpStatus.CREATED)
                 .location(URI.create("/users/" + userRest.getId()))
                 .body(userRest));

@@ -24,6 +24,15 @@ public class UserEntity {
     @Column("PASSWORD")
     private String password;
 
+    public UserEntity() {}
+
+    public UserEntity(UUID id, String firstName, String lastName, String email, String password) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
 
     public UUID getId() {
         return id;
